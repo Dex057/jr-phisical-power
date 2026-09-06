@@ -1,0 +1,7 @@
+# Material bruto de referência (já copiado/usado em assets/) — não precisa
+# duplicar no repositório.
+ref/
+
+# Sistema
+.DS_Store
+Thumbs.db
