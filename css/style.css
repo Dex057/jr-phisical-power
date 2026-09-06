@@ -12,7 +12,9 @@
   --neon:          #4dff3c;
   --neon-soft:     #a6ff9a;
   --neon-dark:     #1c7a2f;
-  --red-accent:    #e63946;
+  --red-accent:    #ff3b4e;
+  --purple-accent: #b14aff;
+  --purple-soft:   #d9aeff;
 
   --text:          #eef4ef;
   --text-dim:      #9db3a4;
@@ -196,6 +198,18 @@ body::before{
   transform: translateY(-2px);
 }
 
+/* Instagram remete a roxo/rosa — usamos essa variante só nesse botão,
+   reforçando a identidade da rede social e variando a paleta do site. */
+.btn-purple{
+  background: var(--purple-accent);
+  color: #1a0630;
+  box-shadow: 0 0 18px rgba(177,74,255,.55), 0 0 40px rgba(177,74,255,.25);
+}
+.btn-purple:hover{
+  box-shadow: 0 0 26px rgba(177,74,255,.85), 0 0 60px rgba(177,74,255,.4);
+  transform: translateY(-2px);
+}
+
 .btn-outline{
   background: transparent;
   border-color: var(--border);
@@ -262,6 +276,11 @@ body::before{
 .brand-text b{
   color: var(--neon);
   text-shadow: 0 0 12px rgba(77,255,60,.55);
+}
+/* "JR" em vermelho, como na logo original da academia */
+.brand-jr{
+  color: var(--red-accent);
+  text-shadow: 0 0 12px rgba(255,59,78,.55);
 }
 
 .main-nav{
@@ -484,6 +503,9 @@ body::before{
   color: var(--neon);
   margin-bottom: 14px;
 }
+/* variação de cor para quebrar a monotonia do verde entre as seções */
+.tag--red{ color: var(--red-accent); }
+.tag--purple{ color: var(--purple-accent); }
 
 .section-title{
   font-size: clamp(1.9rem, 4.2vw, 3rem);
@@ -511,6 +533,11 @@ body::before{
 }
 
 .feature-card{
+  /* cada card tem sua própria cor de destaque — evita a monotonia do
+     verde único, mantendo o verde como cor predominante da marca */
+  --accent: var(--neon);
+  --accent-soft: rgba(77,255,60,.5);
+  --accent-glow: rgba(77,255,60,.16);
   background: linear-gradient(160deg, var(--surface), var(--surface-2));
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -518,6 +545,16 @@ body::before{
   transition: border-color .35s ease;
   position: relative;
   overflow: hidden;
+}
+.feature-card:nth-child(2){
+  --accent: var(--red-accent);
+  --accent-soft: rgba(255,59,78,.5);
+  --accent-glow: rgba(255,59,78,.16);
+}
+.feature-card:nth-child(3){
+  --accent: var(--purple-accent);
+  --accent-soft: rgba(177,74,255,.5);
+  --accent-glow: rgba(177,74,255,.16);
 }
 
 /* número gigante em outline no fundo do card */
@@ -530,7 +567,7 @@ body::before{
   font-size: 6.5rem;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(77,255,60,.22);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 22%, transparent);
   pointer-events: none;
   z-index: 0;
   transition: -webkit-text-stroke-color .35s ease, transform .35s ease;
@@ -542,16 +579,16 @@ body::before{
   inset: 0;
   z-index: 0;
   opacity: 0;
-  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(77,255,60,.16), transparent 70%);
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), var(--accent-glow), transparent 70%);
   transition: opacity .35s ease;
 }
 
 /* Hover sutil (glow + borda), sem levitar/inclinar: são cards informativos,
    não links — não devem "parecer clicáveis" sem levar a lugar nenhum. */
 .feature-card:hover{
-  border-color: rgba(77,255,60,.5);
+  border-color: var(--accent-soft);
 }
-.feature-card:hover::before{ -webkit-text-stroke-color: rgba(77,255,60,.4); }
+.feature-card:hover::before{ -webkit-text-stroke-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 .feature-card:hover .feature-card-spotlight{ opacity: 1; }
 
 .feature-card h3{
@@ -569,8 +606,8 @@ body::before{
   height: 3px;
   border-radius: 3px;
   margin-bottom: 16px;
-  background: var(--neon);
-  box-shadow: 0 0 8px var(--neon);
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
   transition: width .3s ease;
 }
 .feature-card:hover h3::before{ width: 52px;
@@ -674,6 +711,15 @@ body::before{
   font-family: var(--font-display);
   font-size: 1.1rem;
   box-shadow: inset 0 0 0 1px var(--border);
+}
+/* avatares alternam verde/vermelho/roxo — quebra a monotonia na grade de avaliações */
+.review-card:nth-of-type(3n+2) .review-avatar{
+  background: rgba(255,59,78,.12);
+  color: var(--red-accent);
+}
+.review-card:nth-of-type(3n+3) .review-avatar{
+  background: rgba(177,74,255,.12);
+  color: var(--purple-accent);
 }
 .review-author-info{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .review-author-info strong{ font-size: .92rem; color: var(--text); }
