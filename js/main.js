@@ -4,6 +4,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
   /* ---------- Preloader ---------- */
   const preloader = document.getElementById('preloader');
   const hidePreloader = () => {
@@ -26,27 +29,81 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  /* ---------- Mobile nav toggle ---------- */
+  /* ---------- Mobile nav: abrir/fechar com foco e teclado ----------
+     Segue o padrão de "disclosure" do WAI-ARIA: aria-expanded reflete o
+     estado, Esc fecha e devolve o foco ao botão, e o menu fica `inert`
+     (fora da ordem de tabulação) quando fechado no mobile, para que
+     usuários de teclado não caiam em links invisíveis fora da tela. */
   const navToggle = document.getElementById('navToggle');
   const mainNav = document.getElementById('mainNav');
+  const mobileNavQuery = window.matchMedia('(max-width: 980px)');
+
+  const syncNavInert = () => {
+    const isMobile = mobileNavQuery.matches;
+    const isOpen = mainNav.classList.contains('is-open');
+    mainNav.inert = isMobile && !isOpen;
+  };
+
+  const openNav = () => {
+    navToggle.classList.add('is-open');
+    mainNav.classList.add('is-open');
+    navToggle.setAttribute('aria-expanded', 'true');
+    navToggle.setAttribute('aria-label', 'Fechar menu');
+    syncNavInert();
+    mainNav.querySelector('a')?.focus();
+  };
+  const closeNav = ({ returnFocus = false } = {}) => {
+    navToggle.classList.remove('is-open');
+    mainNav.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Abrir menu');
+    syncNavInert();
+    if (returnFocus) navToggle.focus();
+  };
+
   navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('is-open');
-    mainNav.classList.toggle('is-open');
+    if (mainNav.classList.contains('is-open')) closeNav();
+    else openNav();
   });
   mainNav.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navToggle.classList.remove('is-open');
-      mainNav.classList.remove('is-open');
-    });
+    link.addEventListener('click', () => closeNav());
   });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mainNav.classList.contains('is-open')) {
+      closeNav({ returnFocus: true });
+    }
+  });
+  mobileNavQuery.addEventListener('change', () => { closeNav(); });
+  syncNavInert();
+
+  /* ---------- Realce do link ativo no menu (via IntersectionObserver) ---------- */
+  const navLinks = [...document.querySelectorAll('[data-nav]')];
+  const sections = navLinks
+    .map(link => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+  if (sections.length && 'IntersectionObserver' in window) {
+    const setActive = id => {
+      navLinks.forEach(link => {
+        const isActive = link.getAttribute('href') === `#${id}`;
+        link.toggleAttribute('aria-current', isActive);
+        if (isActive) link.setAttribute('aria-current', 'true');
+      });
+    };
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(section => observer.observe(section));
+  }
 
   /* ---------- Footer year ---------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- Cursor glow (desktop) ---------- */
+  /* ---------- Cursor glow (desktop, sem motion reduzido) ---------- */
   const cursorGlow = document.getElementById('cursorGlow');
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (!prefersReducedMotion && canHover) {
     let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
     let tx = cx, ty = cy;
     window.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
@@ -59,12 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
     animateCursor();
   }
 
-  /* ---------- Hero video fallback ----------
-     Se o arquivo assets/video/hero-loop.mp4 não existir (ainda não gerado
-     no Google Flow), escondemos o <video> e mantemos a imagem estática. */
+  /* ---------- Vídeos de fundo (hero + CTA) ----------
+     Se o arquivo de vídeo não existir, escondemos o <video> e mantemos o
+     fallback estático. Com "reduzir movimento" ativado no sistema, nem
+     tentamos carregar/tocar os vídeos — só decoração, não essenciais. */
   const heroVideo = document.getElementById('heroVideo');
   const heroFallbackImg = document.getElementById('heroFallbackImg');
-  if (heroVideo) {
+
+  if (prefersReducedMotion) {
+    document.querySelectorAll('video').forEach(video => {
+      video.pause();
+      video.removeAttribute('autoplay');
+      video.style.display = 'none';
+    });
+  } else if (heroVideo) {
     heroVideo.addEventListener('error', () => { heroVideo.style.display = 'none'; });
     heroVideo.addEventListener('loadeddata', () => {
       heroVideo.style.display = 'block';
@@ -76,9 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  /* ---------- Particles canvas (hero) ---------- */
+  /* ---------- Particles canvas (hero, sem motion reduzido) ---------- */
   const canvas = document.getElementById('particles');
-  if (canvas) {
+  if (canvas && !prefersReducedMotion) {
     const ctx = canvas.getContext('2d');
     let particles = [];
     let w, h;
@@ -125,14 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
     draw();
   }
 
-  /* ---------- Smooth anchor scroll offset for fixed header ----------
-     Implementamos nosso próprio easing via requestAnimationFrame em vez de
-     depender de `scrollTo({behavior:'smooth'})`: em alguns navegadores/GPUs
-     essa API nativa pode travar a rolagem por completo, então preferimos
-     não confiar nela para algo essencial como a navegação do menu. */
+  /* ---------- Scroll suave até âncoras internas ----------
+     Easing próprio via requestAnimationFrame em vez de
+     `scrollTo({behavior:'smooth'})`: em alguns navegadores/GPUs essa API
+     nativa pode travar a rolagem por completo. Também:
+     - atualiza a URL (histórico) para refletir a seção atual;
+     - ignora cliques com modificador (Ctrl/Cmd/meio-clique) para não
+       quebrar o "abrir em nova aba" nativo do navegador. */
   const easeInOutQuad = t => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
   const smoothScrollTo = (targetY, duration = 600) => {
+    if (prefersReducedMotion) { window.scrollTo(0, targetY); return; }
     const startY = window.pageYOffset;
     const distance = targetY - startY;
     const startTime = performance.now();
@@ -147,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // deixa o navegador tratar
       const id = link.getAttribute('href');
       if (id.length <= 1) return;
       const target = document.querySelector(id);
@@ -155,25 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const offset = 80;
       const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
       smoothScrollTo(top);
+      history.pushState(null, '', id);
     });
   });
 
-  /* ---------- Feature cards: tilt 3D + spotlight seguindo o cursor ---------- */
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  /* ---------- Feature cards: spotlight seguindo o cursor ----------
+     Sem tilt/levitação: são cards informativos, não links — inclinar em 3D
+     como se fossem clicáveis induziria o usuário a esperar uma ação que
+     não existe. */
+  if (!prefersReducedMotion && canHover) {
     document.querySelectorAll('.feature-card').forEach(card => {
-      const maxTilt = 8; // graus
       card.addEventListener('mousemove', e => {
         const rect = card.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width;
-        const py = (e.clientY - rect.top) / rect.height;
-        card.style.setProperty('--mx', `${px * 100}%`);
-        card.style.setProperty('--my', `${py * 100}%`);
-        const rotY = (px - 0.5) * maxTilt * 2;
-        const rotX = (0.5 - py) * maxTilt * 2;
-        card.style.transform = `translateY(-6px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
+        card.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+        card.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
       });
     });
   }
@@ -191,9 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // parallax on gallery image
+    // parallax na foto da galeria (desativado com "reduzir movimento")
     const galleryImg = document.querySelector('.gallery-image');
-    if (galleryImg) {
+    if (galleryImg && !prefersReducedMotion) {
       gsap.to(galleryImg, {
         yPercent: -8,
         ease: 'none',

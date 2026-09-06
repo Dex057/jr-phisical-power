@@ -16,6 +16,7 @@
 
   --text:          #eef4ef;
   --text-dim:      #9db3a4;
+  --text-faint:    #7e9487; /* mais clara que um cinza puro para manter contraste AA no fundo escuro */
 
   --font-display:  'Bebas Neue', sans-serif;
   --font-body:     'Poppins', sans-serif;
@@ -28,6 +29,8 @@
 /* Obs.: propositalmente NÃO usamos "scroll-behavior: smooth" aqui — em alguns
    Chromium essa propriedade CSS trava a rolagem nativa por completo. O scroll
    suave dos links do menu é feito via JS (ver main.js), o que é confiável. */
+
+html{ color-scheme: dark; }
 
 body{
   margin: 0;
@@ -49,7 +52,34 @@ h1, h2, h3{
   margin: 0;
   text-transform: uppercase;
   line-height: 1.05;
+  text-wrap: balance;
 }
+
+/* foco visível e consistente com a identidade neon, em qualquer elemento
+   focável via teclado (nunca removemos o outline sem substituto) */
+:focus-visible{
+  outline: 2px solid var(--neon);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* link de pular para o conteúdo — some visualmente até receber foco */
+.skip-link{
+  position: fixed;
+  top: -60px;
+  left: 16px;
+  z-index: 1000;
+  background: var(--neon);
+  color: #06170a;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: 8px;
+  transition: top .2s ease;
+}
+.skip-link:focus{ top: 16px; }
+
+/* pontos de destino de âncora não devem ficar escondidos atrás do header fixo */
+.hero, .section, .cta-section{ scroll-margin-top: 84px; }
 
 p{ color: var(--text-dim); margin: 0; }
 
@@ -259,17 +289,22 @@ body::before{
 }
 .main-nav a:hover{ color: var(--neon-soft); }
 .main-nav a:hover::after{ width: 100%; }
+.main-nav a[aria-current="true"]{ color: var(--neon); }
+.main-nav a[aria-current="true"]::after{ width: 100%; }
 
 .header-actions{ display: flex; align-items: center; gap: 14px; }
 
 .nav-toggle{
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px;
 }
 .nav-toggle span{
   width: 24px; height: 2px;
@@ -470,7 +505,6 @@ body::before{
   grid-template-columns: repeat(3, 1fr);
   gap: 26px;
   margin-top: 50px;
-  perspective: 1200px;
 }
 @media (max-width: 900px){
   .cards-grid{ grid-template-columns: 1fr; }
@@ -481,8 +515,7 @@ body::before{
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 38px 30px 34px;
-  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-  transform-style: preserve-3d;
+  transition: border-color .35s ease;
   position: relative;
   overflow: hidden;
 }
@@ -513,10 +546,10 @@ body::before{
   transition: opacity .35s ease;
 }
 
+/* Hover sutil (glow + borda), sem levitar/inclinar: são cards informativos,
+   não links — não devem "parecer clicáveis" sem levar a lugar nenhum. */
 .feature-card:hover{
-  transform: translateY(-6px);
   border-color: rgba(77,255,60,.5);
-  box-shadow: 0 16px 40px rgba(0,0,0,.4), 0 0 30px rgba(77,255,60,.15);
 }
 .feature-card:hover::before{ -webkit-text-stroke-color: rgba(77,255,60,.4); }
 .feature-card:hover .feature-card-spotlight{ opacity: 1; }
@@ -644,7 +677,7 @@ body::before{
 }
 .review-author-info{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .review-author-info strong{ font-size: .92rem; color: var(--text); }
-.review-meta{ font-size: .76rem; color: #5c6f62; }
+.review-meta{ font-size: .76rem; color: var(--text-faint); }
 
 .reviews-cta{ text-align: center; margin-top: 44px; }
 
@@ -657,17 +690,13 @@ body::before{
   gap: 22px;
   margin-top: 40px;
 }
+/* Sem efeito de hover tipo "botão": são selos informativos, não links —
+   uma badge que sobe e brilha ao passar o mouse sugere clique onde não há. */
 .partner-badge{
   padding: 22px 40px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
-  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
-}
-.partner-badge:hover{
-  border-color: var(--neon);
-  box-shadow: 0 0 24px rgba(77,255,60,.2);
-  transform: translateY(-4px);
 }
 .partner-name{
   font-family: var(--font-display);
@@ -834,7 +863,7 @@ body::before{
 }
 .footer-brand{ margin-bottom: 6px; }
 .site-footer p{ font-size: .85rem; margin: 0; }
-.footer-address{ color: #5c6f62; }
+.footer-address{ color: var(--text-faint); }
 
 /* =========================================================
    WhatsApp float
@@ -891,6 +920,7 @@ body::before{
     padding: 40px;
     transform: translateX(100%);
     transition: transform .4s ease;
+    overscroll-behavior: contain;
     z-index: 490;
   }
   .main-nav.is-open{ transform: translateX(0); }
@@ -905,4 +935,27 @@ body::before{
 @media (max-width: 480px){
   .section{ padding: 80px 0; }
   .whatsapp-float{ width: 54px; height: 54px; right: 16px; bottom: 16px; }
+}
+
+/* =========================================================
+   Movimento reduzido — respeita a preferência do sistema
+   (o JS também evita iniciar partículas, cursor glow e vídeos
+   de fundo quando essa preferência está ativa)
+   ========================================================= */
+@media (prefers-reduced-motion: reduce){
+  .neon-flicker,
+  .marquee-track,
+  .scroll-cue span,
+  .whatsapp-float{
+    animation: none !important;
+  }
+  [data-reveal]{
+    transition-duration: .01ms !important;
+  }
+  .feature-card,
+  .review-card,
+  .partner-badge,
+  .btn{
+    transition-duration: .01ms !important;
+  }
 }
