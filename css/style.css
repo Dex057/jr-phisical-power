@@ -624,35 +624,36 @@ body::before{
   opacity: .6;
 }
 
-/* seta lateral sugerindo "passar" pra próxima foto */
+/* seta lateral sugerindo "passar" pra próxima foto — mesmo indicador
+   neon do scroll-cue do hero, só que apontando pro lado em vez de baixo */
 .gallery-arrow{
   position: absolute;
   top: 50%;
-  right: 18px;
+  right: 6px;
   transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid var(--accent-soft, rgba(77,255,60,.5));
-  background: rgba(5,7,6,.55);
-  backdrop-filter: blur(3px);
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color .2s ease, border-color .2s ease;
   z-index: 2;
 }
-.gallery-arrow:hover{ background: rgba(5,7,6,.8); border-color: var(--neon); }
 .gallery-arrow span{
   display: block;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-right: 2px solid var(--neon);
   border-bottom: 2px solid var(--neon);
-  filter: drop-shadow(0 0 5px var(--neon));
+  filter: drop-shadow(0 0 6px var(--neon));
   transform: rotate(-45deg);
-  margin-left: -3px;
+  animation: carouselCue 1.8s ease infinite;
+}
+@keyframes carouselCue{
+  0%, 100%{ opacity: .3; transform: translateX(-4px) rotate(-45deg); }
+  50%{ opacity: 1; transform: translateX(4px) rotate(-45deg); }
 }
 
 .gallery-dots{
@@ -1125,6 +1126,7 @@ body::before{
   .neon-flicker,
   .marquee-track,
   .scroll-cue span,
+  .gallery-arrow span,
   .whatsapp-float{
     animation: none !important;
   }
