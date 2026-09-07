@@ -406,24 +406,19 @@ body::before{
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
-  width: 22px; height: 36px;
-  border: 2px solid var(--border);
-  border-radius: 20px;
 }
 .scroll-cue span{
-  position: absolute;
-  top: 6px; left: 50%;
-  width: 4px; height: 8px;
-  background: var(--neon);
-  box-shadow: 0 0 8px var(--neon);
-  border-radius: 4px;
-  transform: translateX(-50%);
+  display: block;
+  width: 12px; height: 12px;
+  border-right: 2px solid var(--neon);
+  border-bottom: 2px solid var(--neon);
+  filter: drop-shadow(0 0 6px var(--neon));
+  transform: rotate(45deg);
   animation: scrollCue 1.8s ease infinite;
 }
 @keyframes scrollCue{
-  0%{ opacity: 1; top: 6px; }
-  70%{ opacity: 0; top: 20px; }
-  100%{ opacity: 0; top: 6px; }
+  0%, 100%{ opacity: .3; transform: translateY(-4px) rotate(45deg); }
+  50%{ opacity: 1; transform: translateY(4px) rotate(45deg); }
 }
 
 /* =========================================================
