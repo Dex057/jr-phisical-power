@@ -248,6 +248,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* ---------- Galeria: carrossel de fotos do espaço ----------
+     3 fotos no mesmo espaço da imagem principal, uma visível por vez.
+     Troca só por ação do usuário (clique na seta ou arrastar/swipe no
+     touch) — sem autoplay, pra não ter conteúdo mudando sozinho na tela.
+     A primeira foto (espaço geral) continua sendo a que abre por padrão. */
+  const galleryCarousel = document.getElementById('galleryCarousel');
+  const galleryArrow = document.getElementById('galleryArrow');
+  const galleryDots = document.getElementById('galleryDots');
+  const galleryLive = document.getElementById('galleryLive');
+  if (galleryCarousel && galleryArrow) {
+    const slides = [...galleryCarousel.querySelectorAll('.gallery-slide')];
+    const dots = galleryDots ? [...galleryDots.querySelectorAll('.gallery-dot')] : [];
+    let current = 0;
+
+    const goToSlide = index => {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('is-active', i === current);
+        slide.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+      if (galleryLive) galleryLive.textContent = `Foto ${current + 1} de ${slides.length}: ${slides[current].alt}`;
+    };
+
+    galleryArrow.addEventListener('click', () => goToSlide(current + 1));
+
+    let touchStartX = null;
+    galleryCarousel.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    galleryCarousel.addEventListener('touchend', e => {
+      if (touchStartX === null) return;
+      const delta = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(delta) > 40) goToSlide(current + (delta < 0 ? 1 : -1));
+      touchStartX = null;
+    }, { passive: true });
+  }
+
   /* ---------- Feature cards: spotlight seguindo o cursor ----------
      Sem tilt/levitação: são cards informativos, não links — inclinar em 3D
      como se fossem clicáveis induziria o usuário a esperar uma ação que
@@ -276,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // parallax na foto da galeria (desativado com "reduzir movimento")
-    const galleryImg = document.querySelector('.gallery-image');
+    const galleryImg = document.querySelector('.gallery-carousel');
     if (galleryImg && !prefersReducedMotion) {
       gsap.to(galleryImg, {
         yPercent: -8,

@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/img/espaco-interno.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/style.css?v=8">
 
 <script type="application/ld+json">
 {
@@ -153,14 +153,21 @@
         <a href="https://www.instagram.com/_academiajrphisicalpower_/" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Ver mais fotos no Instagram</a>
       </div>
       <div class="gallery-image-wrap" data-reveal>
-        <div class="gallery-image-main-wrap">
-          <img src="assets/img/espaco-interno.webp" alt="Interior da Academia Jr Phisical Power" class="gallery-image">
-          <div class="gallery-frame"></div>
+        <div class="gallery-carousel" id="galleryCarousel">
+          <img src="assets/img/espaco-interno.webp" alt="Interior da Academia Jr Phisical Power" class="gallery-slide is-active">
+          <img src="assets/img/cardio.webp" alt="Área de cardio da Jr Phisical Power, com esteiras e escada infinita" class="gallery-slide" aria-hidden="true">
+          <img src="assets/img/bicicletas.webp" alt="Bicicletas ergométricas da Jr Phisical Power" class="gallery-slide" aria-hidden="true">
         </div>
-        <div class="gallery-mini-grid">
-          <img src="assets/img/cardio.webp" alt="Área de cardio da Jr Phisical Power, com esteiras e escada infinita" class="gallery-mini">
-          <img src="assets/img/bicicletas.webp" alt="Bicicletas ergométricas da Jr Phisical Power" class="gallery-mini">
+        <div class="gallery-frame"></div>
+        <button type="button" class="gallery-arrow" id="galleryArrow" aria-label="Ver próxima foto do espaço">
+          <span aria-hidden="true"></span>
+        </button>
+        <div class="gallery-dots" id="galleryDots" aria-hidden="true">
+          <span class="gallery-dot is-active"></span>
+          <span class="gallery-dot"></span>
+          <span class="gallery-dot"></span>
         </div>
+        <span class="visually-hidden" id="galleryLive" aria-live="polite"></span>
       </div>
     </div>
   </section>
@@ -491,6 +498,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=4"></script>
+<script src="js/main.js?v=5"></script>
 </body>
 </html>
