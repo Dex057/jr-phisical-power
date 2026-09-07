@@ -87,6 +87,36 @@ document.addEventListener('DOMContentLoaded', () => {
     sections.forEach(section => observer.observe(section));
   }
 
+  /* ---------- Marquee: garante loop completo em qualquer largura ----------
+     A faixa animada anda -50% da própria largura do conteúdo. Com um número
+     fixo de cópias no HTML, em telas largas (desktop) o conteúdo ficava mais
+     estreito que a faixa verde inteira: a animação "sumia" no meio do
+     caminho em vez de preencher a faixa toda. Aqui duplicamos o grupo de
+     palavras em JS até cobrir a largura da tela (+1 de folga), em dois
+     blocos idênticos, garantindo um loop perfeito e sem buracos em
+     qualquer resolução. */
+  const marqueeEl = document.getElementById('marquee');
+  const marqueeTrack = document.getElementById('marqueeTrack');
+  const seedGroup = marqueeTrack?.querySelector('.marquee-group');
+  if (marqueeEl && marqueeTrack && seedGroup) {
+    const groupWidth = seedGroup.offsetWidth || 200;
+    const buildMarquee = () => {
+      const copies = Math.max(2, Math.ceil(marqueeEl.offsetWidth / groupWidth) + 1);
+      marqueeTrack.innerHTML = '';
+      for (let half = 0; half < 2; half++) {
+        for (let i = 0; i < copies; i++) {
+          marqueeTrack.appendChild(seedGroup.cloneNode(true));
+        }
+      }
+    };
+    buildMarquee();
+    let marqueeResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(marqueeResizeTimer);
+      marqueeResizeTimer = setTimeout(buildMarquee, 200);
+    });
+  }
+
   /* ---------- Footer year ---------- */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();

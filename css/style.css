@@ -436,8 +436,13 @@ body::before{
 .marquee-track{
   display: flex;
   width: max-content;
-  gap: 22px;
   animation: marquee 22s linear infinite;
+}
+.marquee-group{
+  display: flex;
+  flex-shrink: 0;
+  gap: 22px;
+  padding-right: 22px;
 }
 .marquee-track span{
   font-family: var(--font-display);

@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/img/espaco-interno.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="css/style.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=6">
 
 <script type="application/ld+json">
 {
@@ -107,10 +107,11 @@
   </section>
 
   <!-- ===== MARQUEE ===== -->
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>FORÇA</span><span>•</span><span>DISCIPLINA</span><span>•</span><span>FOCO</span><span>•</span><span>RESULTADO</span><span>•</span>
-      <span>FORÇA</span><span>•</span><span>DISCIPLINA</span><span>•</span><span>FOCO</span><span>•</span><span>RESULTADO</span><span>•</span>
+  <div class="marquee" id="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marqueeTrack">
+      <div class="marquee-group">
+        <span>FORÇA</span><span>•</span><span>DISCIPLINA</span><span>•</span><span>FOCO</span><span>•</span><span>RESULTADO</span><span>•</span>
+      </div>
     </div>
   </div>
 
@@ -258,6 +259,18 @@
             <div class="review-author-info">
               <strong>Kelly Dias</strong>
               <span class="review-meta">1 avaliação · 1 foto</span>
+            </div>
+          </div>
+        </a>
+
+        <a class="review-card" data-reveal href="https://share.google/0uEFy5aPuXtC8GIaY" target="_blank" rel="noopener" aria-label="Ver avaliação de Leandro Amaral no Google (abre em nova aba)">
+          <div class="review-stars" aria-label="5 de 5 estrelas">★★★★★</div>
+          <p class="review-text">Academia tem um preço bom, principalmente no plano anual, e a estrutura é muito boa, equipamentos top.</p>
+          <div class="review-author">
+            <span class="review-avatar">L</span>
+            <div class="review-author-info">
+              <strong>Leandro Amaral</strong>
+              <span class="review-meta">1 avaliação</span>
             </div>
           </div>
         </a>
@@ -472,6 +485,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
 </body>
 </html>
