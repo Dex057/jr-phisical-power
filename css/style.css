@@ -506,7 +506,9 @@ body::before{
   --accent-soft: rgba(77,255,60,.5);
   --accent-glow: rgba(77,255,60,.16);
   background: linear-gradient(160deg, var(--surface), var(--surface-2));
-  border: 1px solid var(--border);
+  /* destaque neon sempre visível (não só no :hover/toque) — em touch,
+     hover só ativa com o dedo na tela, então o efeito ficava escondido */
+  border: 1px solid var(--accent-soft);
   border-radius: var(--radius);
   padding: 38px 30px 34px;
   transition: border-color .35s ease;
@@ -534,29 +536,22 @@ body::before{
   font-size: 6.5rem;
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 22%, transparent);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 40%, transparent);
   pointer-events: none;
   z-index: 0;
-  transition: -webkit-text-stroke-color .35s ease, transform .35s ease;
 }
 
-/* spotlight que segue o cursor (posição via --mx/--my setadas no JS) */
+/* spotlight sempre visível; em telas com mouse ele ainda acompanha o
+   cursor (posição via --mx/--my setadas no JS) */
 .feature-card-spotlight{
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0;
+  opacity: 1;
   background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), var(--accent-glow), transparent 70%);
-  transition: opacity .35s ease;
 }
 
-/* Hover sutil (glow + borda), sem levitar/inclinar: são cards informativos,
-   não links — não devem "parecer clicáveis" sem levar a lugar nenhum. */
-.feature-card:hover{
-  border-color: var(--accent-soft);
-}
-.feature-card:hover::before{ -webkit-text-stroke-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-.feature-card:hover .feature-card-spotlight{ opacity: 1; }
+.feature-card:hover{ border-color: var(--accent); }
 
 .feature-card h3{
   position: relative;
@@ -569,15 +564,12 @@ body::before{
 .feature-card h3::before{
   content: "";
   display: block;
-  width: 32px;
+  width: 52px;
   height: 3px;
   border-radius: 3px;
   margin-bottom: 16px;
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
-  transition: width .3s ease;
-}
-.feature-card:hover h3::before{ width: 52px;
 }
 .feature-card p{ position: relative; z-index: 1; font-size: .98rem; }
 
