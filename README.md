@@ -59,7 +59,13 @@ Especificações que funcionam bem: 16:9, 6–10s, sem necessidade de áudio (o
 ## Personalização rápida
 - Cores neon: variáveis `--neon`, `--neon-soft`, `--neon-dark` no topo de `css/style.css`
 - Textos: direto no `index.html`, cada seção tem `id` (`#hero`, `#diferenciais`, `#estrutura`, `#convenios`, `#horarios`, `#planos`, `#contato`)
-- Planos com preços: quando definir os valores dos planos, me avise que eu monto os cards de preço na seção `#planos`
+- Planos com preços: seção `#planos` no `index.html` (busque por `PLANOS E VALORES`).
+  Cada card fica em `.plan-card` e a lista de extras (casal, família, 15 dias,
+  avaliação física) em `.plans-extra-row` — edite os valores direto no HTML.
+- Cache do navegador: `css/style.css` e `js/main.js` são carregados com
+  `?v=N` no `index.html`. Sempre que editar esses arquivos, aumente o número
+  da versão (ex.: `?v=4`) para garantir que quem já visitou o site veja a
+  atualização em vez de uma versão em cache.
 - A logo (`assets/img/logo.jpeg`) não aparece mais no header/rodapé (ficava
   ilegível reduzida a um ícone pequeno) — hoje é usada só como favicon da aba
   do navegador. O cabeçalho usa apenas o nome estilizado "JR PHISICAL POWER".

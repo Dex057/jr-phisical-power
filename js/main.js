@@ -7,20 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  /* ---------- Preloader ---------- */
-  const preloader = document.getElementById('preloader');
-  const hidePreloader = () => {
-    if (!preloader) return;
-    preloader.classList.add('is-hidden');
-    // não depende só da transição CSS: garante que pare de bloquear
-    // cliques/scroll mesmo se algo atrasar a renderização.
-    preloader.style.pointerEvents = 'none';
-    setTimeout(() => { preloader.style.display = 'none'; }, 650);
-  };
-  window.addEventListener('load', () => setTimeout(hidePreloader, 400));
-  // fallback caso 'load' demore (ex.: fontes/CDN lentos)
-  setTimeout(hidePreloader, 2200);
-
   /* ---------- Header on scroll ---------- */
   const header = document.getElementById('siteHeader');
   const onScroll = () => {
@@ -36,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
      usuários de teclado não caiam em links invisíveis fora da tela. */
   const navToggle = document.getElementById('navToggle');
   const mainNav = document.getElementById('mainNav');
+  const navBackdrop = document.getElementById('navBackdrop');
   const mobileNavQuery = window.matchMedia('(max-width: 980px)');
 
   const syncNavInert = () => {
@@ -49,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainNav.classList.add('is-open');
     navToggle.setAttribute('aria-expanded', 'true');
     navToggle.setAttribute('aria-label', 'Fechar menu');
+    navBackdrop.hidden = false;
     syncNavInert();
     mainNav.querySelector('a')?.focus();
   };
@@ -57,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mainNav.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
     navToggle.setAttribute('aria-label', 'Abrir menu');
+    navBackdrop.hidden = true;
     syncNavInert();
     if (returnFocus) navToggle.focus();
   };
@@ -65,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mainNav.classList.contains('is-open')) closeNav();
     else openNav();
   });
+  navBackdrop.addEventListener('click', () => closeNav());
   mainNav.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => closeNav());
   });

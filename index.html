@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/img/espaco-interno.webp" fetchpriority="high">
 
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=3">
 
 <script type="application/ld+json">
 {
@@ -48,14 +48,6 @@
 
 <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
 
-<!-- ===== PRELOADER ===== -->
-<div id="preloader">
-  <div class="preloader-inner">
-    <span class="preloader-logo">JR<i>.</i></span>
-    <div class="preloader-bar"><span></span></div>
-  </div>
-</div>
-
 <!-- ===== CURSOR GLOW (desktop only, via JS) ===== -->
 <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
 
@@ -83,6 +75,8 @@
     </div>
   </div>
 </header>
+
+<div class="nav-backdrop" id="navBackdrop" hidden></div>
 
 <main id="main-content" tabindex="-1">
 
@@ -179,7 +173,7 @@
             <span class="review-avatar">L</span>
             <div class="review-author-info">
               <strong>Liliane Ferreira</strong>
-              <span class="review-meta">1 avaliação · 1 foto · um ano atrás</span>
+              <span class="review-meta">1 avaliação · 1 foto</span>
             </div>
           </div>
         </a>
@@ -191,7 +185,7 @@
             <span class="review-avatar">L</span>
             <div class="review-author-info">
               <strong>Lucas Leal</strong>
-              <span class="review-meta">Local Guide · 6 avaliações · 67 fotos · 2 anos atrás</span>
+              <span class="review-meta">Local Guide · 6 avaliações · 67 fotos</span>
             </div>
           </div>
         </a>
@@ -203,7 +197,7 @@
             <span class="review-avatar">D</span>
             <div class="review-author-info">
               <strong>Debora Oliveira</strong>
-              <span class="review-meta">2 avaliações · 7 meses atrás</span>
+              <span class="review-meta">2 avaliações</span>
             </div>
           </div>
         </a>
@@ -215,7 +209,7 @@
             <span class="review-avatar">I</span>
             <div class="review-author-info">
               <strong>Igor Pereira</strong>
-              <span class="review-meta">2 avaliações · um ano atrás</span>
+              <span class="review-meta">2 avaliações</span>
             </div>
           </div>
         </a>
@@ -227,7 +221,7 @@
             <span class="review-avatar">R</span>
             <div class="review-author-info">
               <strong>Rafael Pereira</strong>
-              <span class="review-meta">1 avaliação · 1 foto · 9 meses atrás</span>
+              <span class="review-meta">1 avaliação · 1 foto</span>
             </div>
           </div>
         </a>
@@ -239,7 +233,7 @@
             <span class="review-avatar">T</span>
             <div class="review-author-info">
               <strong>Thiago Silva</strong>
-              <span class="review-meta">1 avaliação · 9 meses atrás</span>
+              <span class="review-meta">1 avaliação</span>
             </div>
           </div>
         </a>
@@ -251,7 +245,7 @@
             <span class="review-avatar">A</span>
             <div class="review-author-info">
               <strong>Adrielly Rosario</strong>
-              <span class="review-meta">1 avaliação · 1 foto · um ano atrás</span>
+              <span class="review-meta">1 avaliação · 1 foto</span>
             </div>
           </div>
         </a>
@@ -263,7 +257,7 @@
             <span class="review-avatar">K</span>
             <div class="review-author-info">
               <strong>Kelly Dias</strong>
-              <span class="review-meta">1 avaliação · 1 foto · um ano atrás</span>
+              <span class="review-meta">1 avaliação · 1 foto</span>
             </div>
           </div>
         </a>
@@ -316,8 +310,80 @@
     </div>
   </section>
 
-  <!-- ===== PLANOS / CTA ===== -->
-  <section class="section cta-section" id="planos">
+  <!-- ===== PLANOS ===== -->
+  <section class="section" id="planos">
+    <div class="container">
+      <span class="tag" data-reveal>PLANOS E VALORES</span>
+      <h2 class="section-title" data-reveal>Escolha o plano ideal pra você</h2>
+      <p style="max-width:560px;" data-reveal>Valores sujeitos a alteração — confirme a condição do momento direto com a gente pelo WhatsApp.</p>
+
+      <div class="plans-grid">
+        <article class="plan-card" data-reveal>
+          <h3>Mensal</h3>
+          <p class="plan-price">
+            <span class="plan-currency">R$</span>
+            <span class="plan-amount">90</span>
+            <span class="plan-period">/mês</span>
+          </p>
+          <p class="plan-note">ou R$ 80 no plano 3x por semana</p>
+        </article>
+
+        <article class="plan-card" data-reveal>
+          <h3>Trimestral</h3>
+          <p class="plan-price">
+            <span class="plan-currency">R$</span>
+            <span class="plan-amount">240</span>
+            <span class="plan-period">/3 meses</span>
+          </p>
+        </article>
+
+        <article class="plan-card plan-card--highlight" data-reveal>
+          <span class="plan-badge">Mais escolhido</span>
+          <h3>Semestral</h3>
+          <p class="plan-price">
+            <span class="plan-currency">R$</span>
+            <span class="plan-amount">420</span>
+            <span class="plan-period">/6 meses</span>
+          </p>
+        </article>
+
+        <article class="plan-card" data-reveal>
+          <h3>Anual</h3>
+          <p class="plan-price">
+            <span class="plan-currency">R$</span>
+            <span class="plan-amount">750</span>
+            <span class="plan-period">/ano</span>
+          </p>
+        </article>
+      </div>
+
+      <div class="plans-extra schedule-card" data-reveal>
+        <div class="plans-extra-row">
+          <span class="plans-extra-label">Pacote casal <small>namoro ou casados, cada</small></span>
+          <span class="plans-extra-price">R$ 85,00</span>
+        </div>
+        <div class="plans-extra-row">
+          <span class="plans-extra-label">Pacote família <small>mínimo 3 pessoas da mesma família, cada</small></span>
+          <span class="plans-extra-price">R$ 85,00</span>
+        </div>
+        <div class="plans-extra-row">
+          <span class="plans-extra-label">15 dias <small>plano corrido</small></span>
+          <span class="plans-extra-price">R$ 60,00</span>
+        </div>
+        <div class="plans-extra-row">
+          <span class="plans-extra-label">Avaliação física <small>agendada</small></span>
+          <span class="plans-extra-price">R$ 40,00</span>
+        </div>
+      </div>
+
+      <div class="plans-cta" data-reveal>
+        <a href="https://wa.me/5591985465062?text=Ol%C3%A1!%20Quero%20me%20matricular%20na%20Academia%20Jr%20Phisical%20Power." target="_blank" rel="noopener" class="btn btn-neon">Fale com a gente pra se matricular</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA SOCIAL ===== -->
+  <section class="section cta-section">
     <div class="cta-media">
       <video class="cta-video" autoplay muted loop playsinline>
         <source src="assets/video/planos-bg.mp4" type="video/mp4">
@@ -406,6 +472,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js"></script>
+<script src="js/main.js?v=3"></script>
 </body>
 </html>
